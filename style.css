@@ -1,49 +1,25 @@
+/* futuristic-stage.css */
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(120deg, #1e3c72, #2a5298, #fdd835);
-    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+    color: #00ffea;
     text-align: center;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-header h1 {
-    font-size: 2em;
-    margin-bottom: 5px;
-}
-
-.hosts {
-    font-size: 0.9em;
-    margin-bottom: 20px;
 }
 
 button {
-    background-color: #fdd835;
+    background: linear-gradient(45deg,#00ffea,#0077ff);
     border: none;
-    color: #1e3c72;
-    padding: 10px 20px;
+    color: #fff;
+    padding: 12px 25px;
     margin: 10px;
     cursor: pointer;
-    font-size: 1em;
-    border-radius: 5px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #00ffea;
     transition: 0.3s;
 }
 
-button:hover {
-    background-color: #ffc107;
-}
-
-#stats, #scenario, #playerSetup {
-    background-color: rgba(0,0,0,0.5);
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}#stats {
-    margin-top: 20px;
+button:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00ffea;
 }

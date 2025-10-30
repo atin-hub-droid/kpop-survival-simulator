@@ -1,25 +1,56 @@
-/* futuristic-stage.css */
 body {
-    font-family: 'Orbitron', sans-serif;
-    background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
-    color: #00ffea;
-    text-align: center;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #1f1f2e, #4b3b6e);
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
 }
 
 button {
-    background: linear-gradient(45deg,#00ffea,#0077ff);
-    border: none;
-    color: #fff;
-    padding: 12px 25px;
-    margin: 10px;
-    cursor: pointer;
-    font-size: 1.1em;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #00ffea;
-    transition: 0.3s;
+  background-color: #ff4081;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-button:hover{
-    transform: scale(1.05);
-    box-shadow: 0 0 20px #00ffea;
+button:hover {
+  background-color: #e73370;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#scenario {
+  margin-top: 20px;
+  background: rgba(255,255,255,0.05);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#options button {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+}
+
+#timer {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 18px;
 }

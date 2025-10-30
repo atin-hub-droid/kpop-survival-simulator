@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-Pop Survival Simulator</title>
+<style>
+  body { font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; }
+  h1 { color: #d62828; text-align: center; }
+  #stats { margin-top: 20px; }
+  #startButton { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  #narration { margin-top: 20px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<h1>Welcome to K-Pop Survival Simulator!</h1>
+
+<div id="narration">Press Start Game to begin!</div>
+
+<div id="stats">
+  Singing: <span id="singing">0</span><br>
+  Dancing: <span id="dancing">0</span><br>
+  Rapping: <span id="rapping">0</span><br>
+  Visual: <span id="visual">0</span>
+</div>
+
+<button id="startButton" onclick="startGame()">Start Game</button>
+
+<script>
+// Initialize player stats
+let player = {
+  singing: Math.floor(Math.random() * 7) + 15, // 15-21
+  dancing: Math.floor(Math.random() * 7) + 15,
+  rapping: Math.floor(Math.random() * 7) + 15,
+  visual: Math.floor(Math.random() * 7) + 15,
+  nationality: "Korean"
+};
+
+// Update stats display
+function updateStats() {
+  document.getElementById("singing").innerText = player.singing;
+  document.getElementById("dancing").innerText = player.dancing;
+  document.getElementById("rapping").innerText = player.rapping;
+  document.getElementById("visual").innerText = player.visual;
+}
+
+// Start game function
+function startGame() {
+  document.getElementById("narration").innerText = "The show begins! All 111 trainees enter the stage...";
+  updateStats();
+  // You can expand this with choices, performance rounds, voting etc.
+  console.log("Game started!");
+}
+
+// Initialize display
+updateStats();
+</script>
+
+</body>
+</html>

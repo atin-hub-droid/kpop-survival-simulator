@@ -1,57 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-Pop Male Idol Survival Simulator</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-Pop Idol Survival Simulator</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>K-Pop Male Idol Survival Simulator</h1>
-            <p class="hosts">Hosted by IVE's Won Young & Cha Eun Woo | Judges: G-Dragon (Rap), EXO Kai (Dance), EXO Baekhyun & Chen (Vocal)</p>
-        </header>
+<div class="container">
+  <header>
+    <h1>K-Pop Idol Survival Simulator</h1>
+    <p>Hosted by Won Young (IVE) & Cha Eun Woo (ASTRO)</p>
+  </header>
 
-        <div id="intro">
-            <h2>Welcome to the Ultimate K-Pop Male Idol Survival Show!</h2>
-            <p>111 trainees enter the competition. 20% are foreign. You can be a default Korean trainee or select your nationality.</p>
-            <button onclick="startGame()">Start the Competition</button>
-        </div>
+  <section id="intro">
+    <p>Choose your trainee type:</p>
+    <button onclick="startGame('Korean')">Korean Trainee</button>
+    <button onclick="customForeign()">Foreign Trainee</button>
+  </section>
 
-        <div id="game" style="display:none;">
-            <div id="playerSetup">
-                <h2>Customize Your Trainee Stats</h2>
-                <p>Max 10% customizable. Remaining stats improve/regress in game.</p>
-                <label>Singing: <input type="number" id="inputSinging" min="0" max="10" value="5"></label><br>
-                <label>Dancing: <input type="number" id="inputDancing" min="0" max="10" value="5"></label><br>
-                <label>Rapping: <input type="number" id="inputRapping" min="0" max="10" value="5"></label><br>
-                <label>Visual: <input type="number" id="inputVisual" min="0" max="10" value="5"></label><br>
-                <button onclick="confirmStats()">Confirm Stats</button>
-            </div>
-
-            <div id="stats" style="display:none;">
-                <h2>Your Trainee Stats</h2>
-                <p>Singing: <span id="singing">50</span></p>
-                <p>Dancing: <span id="dancing">50</span></p>
-                <p>Rapping: <span id="rapping">50</span></p>
-                <p>Visual: <span id="visual">50</span></p>
-            </div>
-
-            <div id="scenario" style="display:none;">
-                <h2>Episode <span id="episodeNumber">1</span></h2>
-                <p id="scenarioText"></p>
-                <img id="scenarioImg" src="" alt="" style="max-width:100%; border-radius:10px;"><br>
-                <div id="choices"></div>
-                <button id="nextBtn" onclick="nextScenario()" style="display:none;">Next Scenario</button>
-            </div>
-
-            <div id="result" style="display:none;">
-                <h2 id="resultText"></h2>
-                <button onclick="restartGame()">Restart Game</button>
-            </div>
-        </div>
+  <section id="game" class="hidden">
+    <div id="status">
+      <p id="playerStats"></p>
+      <p id="episodeInfo"></p>
+      <p id="ranking"></p>
     </div>
-    <script src="script.js"></script>
+    <div id="scenario">
+      <p id="scenarioText"></p>
+      <div id="options"></div>
+      <p id="timer">10</p>
+    </div>
+    <button id="nextBtn" class="hidden" onclick="nextScenario()">Next</button>
+  </section>
+
+  <section id="endScreen" class="hidden">
+    <h2 id="endMessage"></h2>
+    <button onclick="restartGame()">Restart</button>
+  </section>
+</div>
+<script src="script.js"></script>
 </body>
 </html>

@@ -771,6 +771,208 @@ let episode9ScenarioPool = [
   }
 ];
 
+// ======== Episode 10 Scenario Pool ========
+let episode10ScenarioPool = [
+  {
+    text: "Debuting Team Original Song Practice: Debut candidates rehearse their group song for the finale stage.",
+    stat: "dancing",
+    options: [
+      { text: "Perfect every note and move", effect: { skill: 4, mentor: 2, fan: 2 } },
+      { text: "Moderate effort", effect: { skill: 2, mentor: 1 } },
+      { text: "Focus only on personal part", effect: { skill: 2, fan: 1 } },
+      { text: "Minimal effort", effect: { skill: -2, mentor: -2, fan: -1 } }
+    ]
+  },
+  {
+    text: "Challenger Battle Prep: Challengers prepare for potential 1v1 matches.",
+    stat: "dancing",
+    options: [
+      { text: "Rehearse meticulously", effect: { skill: 4, fan: 2 } },
+      { text: "Moderate practice", effect: { skill: 2, fan: 1 } },
+      { text: "Focus on favorite section", effect: { skill: 2 } },
+      { text: "Ignore preparation", effect: { skill: -2, fan: -2 } }
+    ]
+  },
+  {
+    text: "Stage Confidence Drill: Trainees work on charisma and stage presence.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Perform with full confidence", effect: { skill: 3, fan: 2 } },
+      { text: "Moderate effort", effect: { skill: 2, fan: 1 } },
+      { text: "Focus only on technique", effect: { skill: 2, fan: -1 } },
+      { text: "Hesitate", effect: { skill: -2, fan: -2 } }
+    ]
+  },
+  {
+    text: "Battle Strategy Session: Mentor asks trainees to plan 1v1 strategies.",
+    stat: "teamwork",
+    options: [
+      { text: "Lead development of strong plan", effect: { skill: 3, mentor: 2, team: 1 } },
+      { text: "Follow mentor’s advice", effect: { skill: 2, mentor: 1 } },
+      { text: "Suggest minor tweaks", effect: { skill: 2, fan: 1 } },
+      { text: "Ignore strategy", effect: { skill: -1, mentor: -2 } }
+    ]
+  },
+  {
+    text: "Stamina Drill: Endurance rehearsal before the finale stage.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Push fully", effect: { skill: 4, fan: -1, mentor: 1 } },
+      { text: "Moderate effort", effect: { skill: 2, team: 1 } },
+      { text: "Support teammates", effect: { skill: 2, team: 2 } },
+      { text: "Skip", effect: { skill: -2, mentor: -2 } }
+    ]
+  },
+  {
+    text: "Mentor Critique: Mentor reviews strengths and weaknesses before battles.",
+    stat: "teamwork",
+    options: [
+      { text: "Apply all feedback", effect: { skill: 3, mentor: 2 } },
+      { text: "Partial implementation", effect: { skill: 2, mentor: 1 } },
+      { text: "Ignore advice", effect: { skill: -2, mentor: -2 } },
+      { text: "Argue for personal style", effect: { skill: 2, fan: 1, mentor: -1 } }
+    ]
+  },
+  {
+    text: "Staff Voting Assistance: Staff gives tips for maximizing fan votes.",
+    stat: "fanService",
+    options: [
+      { text: "Follow guidance", effect: { fan: 3, mentor: 2 } },
+      { text: "Partial effort", effect: { fan: 2 } },
+      { text: "Minor creative tweaks", effect: { fan: 2, team: 1 } },
+      { text: "Ignore advice", effect: { fan: -2 } }
+    ]
+  },
+  {
+    text: "Senior Trainee Observation: Senior trainees evaluate potential battle outcomes.",
+    stat: "teamwork",
+    options: [
+      { text: "Impress with creativity", effect: { skill: 3, fan: 2 } },
+      { text: "Follow instructions", effect: { skill: 2, fan: 1 } },
+      { text: "Suggest minor improvements", effect: { skill: 2, mentor: 1 } },
+      { text: "Ignore feedback", effect: { skill: -2, mentor: -2 } }
+    ]
+  },
+  {
+    text: "Mentor Encouragement: Mentor warns trainees that winners can take debut spots.",
+    stat: "teamwork",
+    options: [
+      { text: "Take it seriously", effect: { skill: 3, fan: 2 } },
+      { text: "Moderate preparation", effect: { skill: 2, fan: 1 } },
+      { text: "Focus on style only", effect: { skill: 2, mentor: 1 } },
+      { text: "Ignore warning", effect: { skill: -2, fan: -2 } }
+    ]
+  },
+  {
+    text: "Random Battle Selection: Mentor randomly picks trainees for 1v1 matches.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Shine confidently", effect: { skill: 4, fan: 2, mentor: 1 } },
+      { text: "Steady performance", effect: { skill: 2, fan: 1 } },
+      { text: "Partial effort", effect: { skill: 1 } },
+      { text: "Hesitate", effect: { skill: -2, fan: -2 } }
+    ]
+  },
+  {
+    text: "Voting Campaign Clip: Fans request last-minute appeal videos.",
+    stat: "fanService",
+    options: [
+      { text: "Engage fully", effect: { fan: 4, team: 2 } },
+      { text: "Moderate effort", effect: { fan: 2 } },
+      { text: "Add humorous twist", effect: { fan: 3, mentor: 1 } },
+      { text: "Skip posting", effect: { fan: -2 } }
+    ]
+  },
+  {
+    text: "Social Media Teaser: Fans want a sneak peek of the final stage.",
+    stat: "fanService",
+    options: [
+      { text: "Share fully", effect: { fan: 4, team: 2 } },
+      { text: "Partial teaser", effect: { fan: 2 } },
+      { text: "Fun twist", effect: { fan: 3, mentor: 1 } },
+      { text: "Avoid posting", effect: { fan: -2 } }
+    ]
+  },
+  {
+    text: "Live Stream Interaction: Fans ask questions about your performance confidence.",
+    stat: "fanService",
+    options: [
+      { text: "Answer sincerely", effect: { fan: 4, mentor: 1 } },
+      { text: "Partial answer", effect: { fan: 2 } },
+      { text: "Humorous answer", effect: { fan: 3, team: 1 } },
+      { text: "Avoid interaction", effect: { fan: -2 } }
+    ]
+  },
+  {
+    text: "Fan Selfie Challenge: Fans request selfies to support 1v1 battles.",
+    stat: "fanService",
+    options: [
+      { text: "Energetic pose", effect: { fan: 3, team: 2 } },
+      { text: "Simple smile", effect: { fan: 2 } },
+      { text: "Creative pose", effect: { fan: 3, mentor: 1 } },
+      { text: "Decline", effect: { fan: -2 } }
+    ]
+  },
+  {
+    text: "Fan Letter Response: Fans write letters cheering for challengers.",
+    stat: "fanService",
+    options: [
+      { text: "Reply personally", effect: { fan: 4, mentor: 1 } },
+      { text: "Short polite reply", effect: { fan: 2 } },
+      { text: "Humorous reply", effect: { fan: 3, team: 1 } },
+      { text: "Ignore", effect: { fan: -2 } }
+    ]
+  },
+  {
+    text: "1v1 Battle Mishap: You forget moves during your 1v1 stage.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Improvise smoothly", effect: { skill: 4, fan: 2 } },
+      { text: "Restart quietly", effect: { skill: 2, mentor: 1 } },
+      { text: "Pause dramatically", effect: { skill: -1, fan: -1 } },
+      { text: "Signal staff", effect: { skill: 2, team: 1 } }
+    ]
+  },
+  {
+    text: "Costume Malfunction: Wardrobe issue occurs mid-performance.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Adjust quickly", effect: { skill: 3, fan: 1 } },
+      { text: "Continue performance", effect: { skill: 2, fan: 1 } },
+      { text: "Pause briefly", effect: { skill: 1, fan: -1 } },
+      { text: "Stop", effect: { skill: -2, fan: -2 } }
+    ]
+  },
+  {
+    text: "Lighting Issue: Spotlight misalignment during your stage.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Adjust and continue", effect: { skill: 2, mentor: 1 } },
+      { text: "Signal staff", effect: { skill: 1, team: 1 } },
+      { text: "Continue normally", effect: { skill: 1, fan: 1 } },
+      { text: "Freeze on stage", effect: { skill: -2, fan: -1 } }
+    ]
+  },
+  {
+    text: "Music Cue Error: Audio miscue mid-performance.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Adjust immediately", effect: { skill: 3, team: 2 } },
+      { text: "Suggest fix", effect: { skill: 2, mentor: 1 } },
+      { text: "Continue", effect: { skill: 1, fan: 1 } },
+      { text: "Stop", effect: { skill: -2, fan: -2 } }
+    ]
+  },
+  {
+    text: "Final Team Battle: Debuting team faces challengers in full group finale.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Lead confidently", effect: { skill: 4, fan: 3, mentor: 2 } },
+      { text: "Perform steadily", effect: { skill: 3, fan: 2 } },
+      { text: "Partial effort", effect: { skill: 2, fan: 1 } },
+      { text: "Hesitate", effect: { skill: -3, fan: -3, mentor: -2 } }
+    ]
+
 // ======== Game Initialization ========
 function customForeign() {
   let nationality = prompt("Enter your nationality:");

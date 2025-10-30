@@ -97,7 +97,19 @@ function updateStats() {
   document.getElementById("episodeInfo").innerText = `Episode ${episode} / ${totalEpisodes}`;
 }
 
-// ======== Scenario Display ========
+// ======== Scenario Display (Fixed for Android) ========
+const optionsDiv = document.getElementById("options");
+
+// Create buttons once
+if (optionsDiv.childElementCount === 0) {
+  for (let i = 0; i < 4; i++) {
+    const btn = document.createElement("button");
+    btn.addEventListener("click", () => selectOption(i));
+    btn.addEventListener("touchend", () => selectOption(i));
+    optionsDiv.appendChild(btn);
+  }
+}
+
 function startScenario() {
   scenarioIndex = 0;
   showScenario();
@@ -109,24 +121,19 @@ function showScenario() {
     return;
   }
 
-  clearInterval(timerInterval); // stop any previous timer
+  clearInterval(timerInterval); // stop previous timer
 
   let sc = scenarios[scenarioIndex];
-  const scenarioText = document.getElementById("scenarioText");
-  const optionsDiv = document.getElementById("options");
+  document.getElementById("scenarioText").innerText = sc.text;
 
-  scenarioText.innerText = sc.text;
-  optionsDiv.innerHTML = "";
-
-  // Add clickable buttons with both click and touch support
+  // Update button text and effect
   sc.options.forEach((opt, i) => {
-    const btn = document.createElement("button");
+    const btn = optionsDiv.children[i];
     btn.innerText = opt.text;
-    btn.addEventListener("click", () => selectOption(i));
-    btn.addEventListener("touchstart", () => selectOption(i));
-    optionsDiv.appendChild(btn);
+    btn.dataset.effect = opt.effect;
   });
 
+  // Reset timer
   timer = 10;
   document.getElementById("timer").innerText = timer;
   timerInterval = setInterval(() => {
@@ -134,7 +141,7 @@ function showScenario() {
     document.getElementById("timer").innerText = timer;
     if(timer <= 0){
       clearInterval(timerInterval);
-      autoPick(); // auto-pick last option if time runs out
+      autoPick();
     }
   }, 1000);
 }
@@ -151,7 +158,7 @@ function selectOption(index) {
 
 function autoPick() {
   let sc = scenarios[scenarioIndex];
-  let effect = sc.options[3].effect; // default regression if no choice
+  let effect = sc.options[3].effect; // default regression
   applyEffect(sc.stat,effect);
   scenarioIndex++;
   showScenario();
@@ -223,4 +230,4 @@ function endGame(message) {
 function restartGame() {
   document.getElementById("endScreen").classList.add("hidden");
   document.getElementById("intro").classList.remove("hidden");
-     }
+    }

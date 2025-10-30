@@ -5,54 +5,146 @@ const companies = ["SM Entertainment", "YG Entertainment", "JYP Entertainment", 
 const maxStat = 100;
 let round = 0;
 
-// Player object
-const player = {
-    name:"You",
-    nationality:"Korean",
+//// Player stats
+let player = {
+    singing: Math.floor(Math.random()*50)+25,
+    dancing: Math.floor(Math.random()*50)+25,
+    rapping: Math.floor(Math.random()*50)+25,
+    visual: Math.floor(Math.random()*50)+25,
     age: Math.floor(Math.random()*7)+15,
-    singing: 50 + Math.floor(Math.random()*6),
-    dancing: 50 + Math.floor(Math.random()*6),
-    rapping: 50 + Math.floor(Math.random()*6),
-    visual: 50 + Math.floor(Math.random()*6),
-    position:"",
-    groupName:"",
-    route:"",
-    alive:true,
-    votes:0,
-    friends:[],
-    rivals:[]
+    nationality: "Korean",
+    episode: 0,
+    question: 0,
+    danger: 0
 };
 
-// === Contestant Name Generator ===
-const koreanFirst = ["Ji", "Min", "Seo", "Hyun", "Jae", "Hae", "Soo", "Yoon"];
-const koreanLast = ["Kim","Lee","Park","Choi","Jung","Kang","Cho","Yoo"];
-const foreignFirst = ["Liam","Noah","Emma","Olivia","Lucas","Mia","Ethan","Ava"];
-const foreignLast = ["Smith","Johnson","Brown","Garcia","Martinez","Lee","Wilson","Taylor"];
+const totalEpisodes = 12;
+const questionsPerEpisode = 10;
 
-function randomKoreanName(){ return koreanLast[Math.floor(Math.random()*koreanLast.length)]+" "+koreanFirst[Math.floor(Math.random()*koreanFirst.length)]; }
-function randomForeignName(){ return foreignFirst[Math.floor(Math.random()*foreignFirst.length)]+" "+foreignLast[Math.floor(Math.random()*foreignLast.length)]; }
+// Update stats display
+function updateStats() {
+    document.getElementById("singing").innerText = player.singing;
+    document.getElementById("dancing").innerText = player.dancing;
+    document.getElementById("rapping").innerText = player.rapping;
+    document.getElementById("visual").innerText = player.visual;
+}
 
-// Contestants array
-const contestants = [];
-function generateContestants(){
-    for(let i=1;i<=111;i++){
-        let nationality = Math.random()<0.2?"Foreign":"Korean";
-        let name = nationality==="Korean"?randomKoreanName():randomForeignName();
-        contestants.push({
-            name:name,
-            nationality:nationality,
-            singing: Math.floor(Math.random()*60)+20,
-            dancing: Math.floor(Math.random()*60)+20,
-            rapping: Math.floor(Math.random()*60)+20,
-            visual: Math.floor(Math.random()*60)+20,
-            stagePresence:["S","A","B","C","D"][Math.floor(Math.random()*5)],
-            status:"active",
-            friends:[],
-            rivals:[],
-            votes:0
-        });
+// Scenario pools
+const scenarios = [
+    { text: "Mentor critiques your singing.", options: ["Focus on vocals", "Practice dance"], effects: [{singing:+3,visual:0},{dancing:+2,singing:-1}] },
+    { text: "Rival challenges you to a rap battle.", options: ["Accept challenge", "Avoid challenge"], effects: [{rapping:+3,visual:-1},{visual:+1,rapping:-1}] },
+    { text: "Fans request your dance video.", options: ["Perform energetically","Stay safe"], effects: [{dancing:+3,singing:-1},{visual:+1,dancing:0}] },
+    { text: "Mentors evaluate stage presence.", options: ["Be confident","Be cautious"], effects: [{visual:+2,dancing:+1},{visual:0,singing:+1}] },
+    { text: "Group project assignment.", options: ["Lead project","Follow quietly"], effects: [{visual:+1, singing:+2},{visual:-1,dancing:+2}] },
+    { text: "Media interview time.", options: ["Be funny","Be serious"], effects: [{visual:+1,singing:0},{visual:0,dancing:+1}] },
+    { text: "Dance challenge.", options: ["Go all out","Focus on precision"], effects: [{dancing:+3,visual:-1},{dancing:+2,singing:+1}] },
+    { text: "Rap evaluation by G-Dragon.", options: ["Freestyle","Stick to lyrics"], effects: [{rapping:+3,visual:-1},{rapping:+2,singing:+1}] },
+    { text: "Vocal evaluation by Baekhyun.", options: ["High notes","Smooth tone"], effects: [{singing:+3,dancing:-1},{singing:+2,visual:+1}] },
+    { text: "Fans vote for your visuals.", options: ["Smile brightly","Keep cool"], effects: [{visual:+3, singing:-1},{visual:+2,dancing:0}] }
+];
+
+// Random scenario generator
+function getRandomScenario() {
+    return scenarios[Math.floor(Math.random()*scenarios.length)];
+}
+
+// Check for elimination
+function checkElimination() {
+    if(player.singing<30 || player.dancing<30 || player.rapping<30 || player.visual<30 || player.danger>=3){
+        document.getElementById("narration").innerText = "You were eliminated due to low performance!";
+        document.getElementById("choices").innerHTML = "";
+        document.getElementById("startButton").innerText = "Try Again";
+        return true;
     }
-    contestants.push(player);
+    return false;
+}
+
+// Render choices for each question
+function renderChoices() {
+    let container = document.getElementById("choices");
+    container.innerHTML = "";
+    let scenario = getRandomScenario();
+    
+    // 10% chance danger zone
+    if(Math.random()<0.1){
+        player.danger++;
+        document.getElementById("narration").innerText = `Danger zone triggered! Your stats drop.\nEpisode ${player.episode+1} Question ${player.question+1}: ${scenario.text}`;
+        player.singing-=2; if(player.singing<0)player.singing=0;
+        player.dancing-=2; if(player.dancing<0)player.dancing=0;
+        updateStats();
+    } else {
+        document.getElementById("narration").innerText = `Episode ${player.episode+1} Question ${player.question+1}: ${scenario.text}`;
+    }
+
+    scenario.options.forEach((opt,i)=>{
+        let btn = document.createElement("button");
+        btn.className = "choice";
+        btn.innerText = opt;
+        btn.onclick = ()=> {
+            let effect = scenario.effects[i];
+            for(let key in effect){
+                player[key] += effect[key];
+                if(player[key]<0) player[key]=0;
+            }
+            updateStats();
+            if(!checkElimination()) nextQuestion();
+        };
+        container.appendChild(btn);
+    });
+}
+
+// Move to next question/episode
+function nextQuestion() {
+    player.question++;
+    if(player.question>=questionsPerEpisode){
+        player.question=0;
+        player.episode++;
+        if(player.episode>=totalEpisodes){
+            showFinale();
+            return;
+        }
+    }
+    renderChoices();
+}
+
+// Final debut/failure
+function showFinale() {
+    document.getElementById("choices").innerHTML="";
+    let totalScore = player.singing+player.dancing+player.rapping+player.visual;
+    let fanVote = Math.floor(Math.random()*50 + totalScore*0.5);
+    let onlineVote = Math.floor(Math.random()*30 + totalScore*0.3);
+    let liveVote = Math.floor(Math.random()*20 + totalScore*0.2);
+    let finalScore = fanVote + onlineVote + liveVote;
+
+    if(finalScore<120){
+        document.getElementById("narration").innerText = "Unfortunately, you did not debut in the final group.";
+    } else {
+        let positions = [];
+        if(player.singing>=70) positions.push("Lead/Main Vocal");
+        if(player.dancing>=70) positions.push("Lead/Main Dancer");
+        if(player.rapping>=70) positions.push("Lead/Main Rapper");
+        if(player.visual>=90) positions.push("Visual");
+        if(player.visual>=70) positions.push("Face of the Group");
+        document.getElementById("narration").innerText = `Congratulations! You debuted as: ${positions.join(", ") || "supporting member"}!`;
+    }
+
+    document.getElementById("startButton").innerText = "Play Again";
+}
+
+// Start/restart game
+document.getElementById("startButton").onclick = ()=>{
+    player.episode=0;
+    player.question=0;
+    player.danger=0;
+    player.singing=Math.floor(Math.random()*50)+25;
+    player.dancing=Math.floor(Math.random()*50)+25;
+    player.rapping=Math.floor(Math.random()*50)+25;
+    player.visual=Math.floor(Math.random()*50)+25;
+    updateStats();
+    renderChoices();
+};
+
+updateStats();
 }
 
 // Update stats display

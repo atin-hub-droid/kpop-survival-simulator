@@ -1,246 +1,219 @@
-// ==========================
-// K-POP MALE IDOL SURVIVAL SIMULATOR
-// Full Script.js
-// ==========================
-
-// --------------------------
-// Global Variables
-// --------------------------
-const TOTAL_CONTESTANTS = 111;
-const EPISODES = 12;
+// ======== Game Variables ========
+let player = {};
+let npcs = [];
 let episode = 1;
 let scenarioIndex = 0;
-let eliminated = false;
-let npcs = [];
-let episodeScenarios = [];
-let player = {
-    name: "You",
-    nationality: "Korean",
-    age: randomInt(15,21),
-    singing: 50,
-    dancing: 50,
-    rapping: 50,
-    visual: 50,
-    popularity: 50,
-    route: "",
-    friendList: [],
-    rivalList: []
-};
-const nationalities = ['Korean','Japanese','Chinese','Thai','Filipino','American','Brazilian','Vietnamese'];
-const koreanNames = ['Jinwoo','Minho','Taeyang','Seokjin','Jiwon','Donghyun','Sangmin','Hyunwoo','Jiho','Yunho'];
-const foreignNames = ['Alex','Leo','Ryan','Ethan','Kai','Lucas','Noah','Max','Jayden','Carter'];
-
-// --------------------------
-// Utility Functions
-// --------------------------
-function randomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-function shuffleArray(array){ return array.sort(()=>Math.random()-0.5); }
-
-// --------------------------
-// Generate NPCs
-// --------------------------
-function generateNPCs(){
-    for(let i=1;i<TOTAL_CONTESTANTS;i++){
-        let nationality = nationalities[randomInt(0,nationalities.length-1)];
-        let npc = {
-            name: `Player ${i} (${nationality})`,
-            nationality: nationality,
-            age: randomInt(15,21),
-            singing: randomInt(30,80),
-            dancing: randomInt(30,80),
-            rapping: randomInt(30,80),
-            visual: randomInt(30,80),
-            popularity: randomInt(20,80),
-            friendship: randomInt(0,100),
-            rivalry: randomInt(0,100)
-        };
-        npcs.push(npc);
-    }
-}
-
-// --------------------------
-// Scenario Pool (100 Scenarios Sample)
-// --------------------------
+let timer = 10;
+let timerInterval;
 let scenarios = [];
-for(let i=1;i<=100;i++){
-    scenarios.push({
-        text: `Scenario ${i}: A challenge appears! What do you do?`,
-        img: `https://picsum.photos/seed/${i}/500/300`,
-        choices: [
-            {text:"Focus on singing", effect:{singing:randomInt(2,5),popularity:randomInt(1,3)}},
-            {text:"Focus on dancing", effect:{dancing:randomInt(2,5),popularity:randomInt(1,3)}},
-            {text:"Focus on rap", effect:{rapping:randomInt(2,5),popularity:randomInt(1,3)}},
-            {text:"Work on visuals", effect:{visual:randomInt(2,5),popularity:randomInt(1,3)}}
-        ]
+let totalEpisodes = 10;
+let totalScenarios = 200; // full scenario pool
+
+// Player routes
+let routes = ["Instant Fan Favorite","Dark Horse","Common Trainee","Fallen Idol"];
+
+// Sample NPC nationalities and traits
+const nationalities = ["Korean","Japanese","Chinese","Thai","Filipino","American","Vietnamese"];
+const npcTraits = ["friendly","rival","fan favorite","hardworking","diva"];
+
+// ======== Scenario Generation ========
+let scenarioPool = [];
+// Auto-generate 200+ scenarios (placeholder, expand with real content)
+for(let i=1;i<=totalScenarios;i++){
+  scenarioPool.push({
+    text: `Scenario ${i}: Make a choice affecting your stats or fan votes.`,
+    stat: ["singing","dancing","rap","visual","votes"][Math.floor(Math.random()*5)],
+    options: [
+      {text:"+3 choice", effect:3},
+      {text:"+4 choice", effect:4},
+      {text:"-3 choice", effect:-3},
+      {text:"+0 choice", effect:0}
+    ]
+  });
+}
+
+// ======== Functions ========
+
+function customForeign() {
+  let nationality = prompt("Enter your nationality:");
+  startGame(nationality);
+}
+
+function startGame(type) {
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  // Initialize player
+  player = {
+    name: "You",
+    nationality: type,
+    age: Math.floor(Math.random()*7)+15,
+    singing: Math.floor(Math.random()*10)+10,
+    dancing: Math.floor(Math.random()*10)+10,
+    rap: Math.floor(Math.random()*10)+10,
+    visual: Math.floor(Math.random()*10)+10,
+    votes: 50,
+    rank: 111
+  };
+
+  initializeNPCs();
+  generateScenarios();
+  updateStats();
+  startScenario();
+}
+
+// Generate 111 NPCs
+function initializeNPCs() {
+  npcs = [];
+  for (let i=1;i<=111;i++) {
+    let nationality = nationalities[Math.floor(Math.random()*nationalities.length)];
+    let trait = npcTraits[Math.floor(Math.random()*npcTraits.length)];
+    npcs.push({
+      name: "Player " + i,
+      nationality: nationality,
+      trait: trait,
+      singing: Math.floor(Math.random()*70)+30,
+      dancing: Math.floor(Math.random()*70)+30,
+      rap: Math.floor(Math.random()*70)+30,
+      visual: Math.floor(Math.random()*70)+30,
+      votes: Math.floor(Math.random()*50),
+      team: "",
+      rank: 111
     });
+  }
 }
 
-// --------------------------
-// Start Game
-// --------------------------
-function startGame(){
-    document.getElementById('intro').style.display = 'none';
-    generateNPCs();
-    document.getElementById('playerSetup').style.display = 'block';
+// Generate scenarios per episode
+function generateScenarios() {
+  scenarios = [];
+  let pool = [...scenarioPool];
+  while(scenarios.length<20){
+    let idx = Math.floor(Math.random()*pool.length);
+    scenarios.push(pool[idx]);
+    pool.splice(idx,1);
+  }
 }
 
-// --------------------------
-// Confirm Player Stats
-// --------------------------
-function confirmStats(){
-    player.singing += parseInt(document.getElementById('inputSinging').value);
-    player.dancing += parseInt(document.getElementById('inputDancing').value);
-    player.rapping += parseInt(document.getElementById('inputRapping').value);
-    player.visual += parseInt(document.getElementById('inputVisual').value);
-    document.getElementById('playerSetup').style.display = 'none';
-    document.getElementById('stats').style.display = 'block';
-    startEpisode();
+function updateStats() {
+  document.getElementById("playerStats").innerText = 
+    `Singing: ${player.singing} | Dancing: ${player.dancing} | Rap: ${player.rap} | Visual: ${player.visual} | Votes: ${player.votes}`;
+  document.getElementById("episodeInfo").innerText = `Episode ${episode} / ${totalEpisodes}`;
 }
 
-// --------------------------
-// Episode Start
-// --------------------------
-function startEpisode(){
-    scenarioIndex = 0;
-    episodeScenarios = shuffleArray(scenarios).slice(0,10); // 10 scenarios per episode
-    showScenario();
+// ======== Scenario Functions ========
+function startScenario() {
+  scenarioIndex = 0;
+  showScenario();
 }
 
-// --------------------------
-// Show Scenario
-// --------------------------
-function showScenario(){
-    let sc = episodeScenarios[scenarioIndex];
-    document.getElementById('scenario').style.display='block';
-    document.getElementById('scenarioText').innerText = sc.text;
-    document.getElementById('scenarioImg').src = sc.img;
-    let choicesDiv = document.getElementById('choices');
-    choicesDiv.innerHTML='';
-    sc.choices.forEach(c=>{
-        let btn = document.createElement('button');
-        btn.innerText = c.text;
-        btn.onclick = ()=>makeChoice(c.effect);
-        choicesDiv.appendChild(btn);
-    });
+function showScenario() {
+  if (scenarioIndex >= scenarios.length) {
+    endEpisode();
+    return;
+  }
+  let sc = scenarios[scenarioIndex];
+  document.getElementById("scenarioText").innerText = sc.text;
+  let optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  sc.options.forEach((opt,i)=>{
+    let btn = document.createElement("button");
+    btn.innerText = opt.text;
+    btn.onclick = ()=>selectOption(i);
+    optionsDiv.appendChild(btn);
+  });
+  timer = 10;
+  document.getElementById("timer").innerText = timer;
+  timerInterval = setInterval(countdown,1000);
 }
 
-// --------------------------
-// Make Choice
-// --------------------------
-function makeChoice(effect){
-    // Apply player effect
-    for(let key in effect){
-        player[key] += effect[key];
-        if(player[key]>100) player[key]=100;
-        if(player[key]<0) player[key]=0;
-    }
-
-    // NPC interaction
-    let npc = npcs[randomInt(0,npcs.length-1)];
-    let interaction = randomInt(0,100);
-    if(interaction<npc.friendship){
-        // Friendship triggered
-        player.singing +=1; player.popularity +=2;
-        player.friendList.push(npc.name);
-    } else if(interaction<npc.friendship+npc.rivalry){
-        // Rivalry triggered
-        player.dancing -=2; player.popularity -=2;
-        player.rivalList.push(npc.name);
-    }
-
-    updateStats();
-    scenarioIndex++;
-    if(scenarioIndex>=episodeScenarios.length){
-        endEpisode();
-    }else showScenario();
+function countdown() {
+  timer--;
+  document.getElementById("timer").innerText = timer;
+  if(timer<=0){
+    clearInterval(timerInterval);
+    autoPick();
+  }
 }
 
-// --------------------------
-// Update Stats
-// --------------------------
-function updateStats(){
-    document.getElementById('singing').innerText=player.singing;
-    document.getElementById('dancing').innerText=player.dancing;
-    document.getElementById('rapping').innerText=player.rapping;
-    document.getElementById('visual').innerText=player.visual;
+function autoPick() {
+  let sc = scenarios[scenarioIndex];
+  let effect = sc.options[3].effect; // default regression if no choice
+  applyEffect(sc.stat,effect);
+  scenarioIndex++;
+  showScenario();
 }
 
-// --------------------------
-// End Episode
-// --------------------------
-function endEpisode(){
-    document.getElementById('scenario').style.display='none';
-    document.getElementById('result').style.display='block';
+function selectOption(index) {
+  clearInterval(timerInterval);
+  let sc = scenarios[scenarioIndex];
+  let effect = sc.options[index].effect;
+  applyEffect(sc.stat,effect);
+  scenarioIndex++;
+  showScenario();
+}
 
-    // Fan vote simulation
-    let fanVote = player.popularity + randomInt(-10,10);
-    let onlineVote = randomInt(20,80);
-    let liveAudience = randomInt(20,80);
-    let performance = (player.singing+player.dancing+player.rapping+player.visual)/4;
+function applyEffect(stat,value) {
+  if(stat=="singing") player.singing += value;
+  else if(stat=="dancing") player.dancing += value;
+  else if(stat=="rap") player.rap += value;
+  else if(stat=="visual") player.visual += value;
+  else player.votes += value;
+  if(player.singing<0) player.singing=0;
+  if(player.dancing<0) player.dancing=0;
+  if(player.rap<0) player.rap=0;
+  if(player.visual<0) player.visual=0;
+  if(player.votes<0) player.votes=0;
+  updateStats();
+}
 
-    let totalScore = performance*0.8 + fanVote*0.1 + onlineVote*0.05 + liveAudience*0.05;
+// ======== Episode & Elimination ========
+function endEpisode() {
+  // Dynamic elimination logic based on episode
+  let eliminationThreshold;
+  if(episode===1) eliminationThreshold = 30; // Example: first episode mentor-only
+  else eliminationThreshold = 40;
 
-    // Elimination check at specific episodes
-    let eliminateThisEpisode = [3,5,7,9,12].includes(episode);
-    if(eliminateThisEpisode && totalScore<50){
-        eliminated = true;
-        document.getElementById('resultText').innerText=`Episode ${episode}: Danger! You were eliminated.`;
-        return;
-    }
-
-    document.getElementById('resultText').innerText=`Episode ${episode} finished! Your total score: ${Math.round(totalScore)}`;
+  if(player.singing<eliminationThreshold || player.dancing<eliminationThreshold ||
+     player.rap<eliminationThreshold || player.visual<eliminationThreshold){
+    endGame("You were eliminated this episode!");
+  } else if(episode>=totalEpisodes){
+    calculateDebut();
+  } else {
     episode++;
-    if(episode>EPISODES) debutOutcome();
+    generateScenarios();
+    startScenario();
+  }
 }
 
-// --------------------------
-// Debut Outcome
-// --------------------------
-function debutOutcome(){
-    let positions = [];
-    if(player.singing>=86) positions.push('Main Vocal');
-    else if(player.singing>=70) positions.push('Lead Vocal');
-    if(player.dancing>=86) positions.push('Main Dancer');
-    else if(player.dancing>=70) positions.push('Lead Dancer');
-    if(player.rapping>=86) positions.push('Main Rapper');
-    else if(player.rapping>=70) positions.push('Lead Rapper');
-    if(player.visual>=90) positions.push('Visual');
+// ======== Debut Outcome ========
+function calculateDebut() {
+  let positions = [];
+  if(player.singing>=86) positions.push("Main Vocalist");
+  else if(player.singing>=70) positions.push("Lead Vocalist");
 
-    // Center (top rank simulated)
-    if(randomInt(0,100)<10) positions.push('Center');
+  if(player.dancing>=86) positions.push("Main Dancer");
+  else if(player.dancing>=70) positions.push("Lead Dancer");
 
-    // Maknae if youngest
-    let allAges = npcs.map(n=>n.age); allAges.push(player.age);
-    if(player.age===Math.min(...allAges)) positions.push('Maknae');
+  if(player.rap>=86) positions.push("Main Rapper");
+  else if(player.rap>=70) positions.push("Lead Rapper");
 
-    // Face of the group FOTG based on popularity
-    if(player.popularity>80) positions.push('Face of the Group');
+  let role = "";
+  if(player.visual>=90) role+="Visual, ";
+  if(player.rank===1) role+="Center, ";
+  if(player.age===Math.min(...npcs.map(n=>n.age))) role+="Maknae, ";
+  if(player.age===Math.max(...npcs.map(n=>n.age))) role+="Eldest, ";
+  role = role.slice(0,-2);
 
-    // Generate debut group name
-    let groupName = generateGroupName();
-    document.getElementById('resultText').innerText=
-        `Congratulations! You debuted in ${groupName} as ${positions.join(', ')}!`;
+  endGame(`Congrats! You debuted as ${positions.join(", ")}${role?(", "+role):""}`);
 }
 
-// --------------------------
-// Restart Game
-// --------------------------
-function restartGame(){
-    episode=1;
-    scenarioIndex=0;
-    eliminated=false;
-    npcs=[];
-    player={name:"You",nationality:"Korean",age:randomInt(15,21),singing:50,dancing:50,rapping:50,visual:50,popularity:50,route:"",friendList:[],rivalList:[]};
-    document.getElementById('result').style.display='none';
-    document.getElementById('stats').style.display='block';
-    startEpisode();
+function endGame(message) {
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("endScreen").classList.remove("hidden");
+  document.getElementById("endMessage").innerText = message;
 }
 
-// --------------------------
-// Debut Group Name Generator
-// --------------------------
-function generateGroupName(){
-    let prefixes = ['Nova','Aero','Astro','Vivid','Pulse','Eclipse','Strive','Zenith'];
-    let suffixes = ['Boys','Crew','Stars','Unit','Legends','Wave','Line','X'];
-    return prefixes[randomInt(0,prefixes.length-1)] + ' ' + suffixes[randomInt(0,suffixes.length-1)];
-}
+function restartGame() {
+  document.getElementById("endScreen").classList.add("hidden");
+  document.getElementById("intro").classList.remove("hidden");
+          }

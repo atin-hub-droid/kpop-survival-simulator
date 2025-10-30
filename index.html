@@ -1,163 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-Pop Survival Simulator</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Pop Male Idol Survival Simulator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>K-Pop Male Idol Survival Simulator</h1>
+            <p class="hosts">Hosted by IVE's Won Young & Cha Eun Woo | Judges: G-Dragon (Rap), EXO Kai (Dance), EXO Baekhyun & Chen (Vocal)</p>
+        </header>
 
-<h1>K-Pop Survival Simulator</h1>
+        <div id="intro">
+            <h2>Welcome to the Ultimate K-Pop Male Idol Survival Show!</h2>
+            <p>111 trainees enter the competition. 20% are foreign. You can be a default Korean trainee or select your nationality.</p>
+            <button onclick="startGame()">Start the Competition</button>
+        </div>
 
-<div id="narration">Press Start Game to begin your journey!</div>
+        <div id="game" style="display:none;">
+            <div id="playerSetup">
+                <h2>Customize Your Trainee Stats</h2>
+                <p>Max 10% customizable. Remaining stats improve/regress in game.</p>
+                <label>Singing: <input type="number" id="inputSinging" min="0" max="10" value="5"></label><br>
+                <label>Dancing: <input type="number" id="inputDancing" min="0" max="10" value="5"></label><br>
+                <label>Rapping: <input type="number" id="inputRapping" min="0" max="10" value="5"></label><br>
+                <label>Visual: <input type="number" id="inputVisual" min="0" max="10" value="5"></label><br>
+                <button onclick="confirmStats()">Confirm Stats</button>
+            </div>
 
-<div id="stats">
-Singing: <span id="singing">0</span><br>
-Dancing: <span id="dancing">0</span><br>
-Rapping: <span id="rapping">0</span><br>
-Visual: <span id="visual">0</span>
-</div>
+            <div id="stats" style="display:none;">
+                <h2>Your Trainee Stats</h2>
+                <p>Singing: <span id="singing">50</span></p>
+                <p>Dancing: <span id="dancing">50</span></p>
+                <p>Rapping: <span id="rapping">50</span></p>
+                <p>Visual: <span id="visual">50</span></p>
+            </div>
 
-<div id="choices"></div>
+            <div id="scenario" style="display:none;">
+                <h2>Episode <span id="episodeNumber">1</span></h2>
+                <p id="scenarioText"></p>
+                <img id="scenarioImg" src="" alt="" style="max-width:100%; border-radius:10px;"><br>
+                <div id="choices"></div>
+                <button id="nextBtn" onclick="nextScenario()" style="display:none;">Next Scenario</button>
+            </div>
 
-<button id="startButton">Start Game</button>
-
-<script src="script.js"></script>
-</body>
-</html>visual:+2,dancing:0}] }
-];
-
-// Elimination check
-function checkElimination() {
-    if(player.singing<30 || player.dancing<30 || player.rapping<30 || player.visual<30) {
-        document.getElementById("narration").innerText =
-            "You were eliminated due to low performance!";
-        document.getElementById("choices").innerHTML = "";
-        document.getElementById("startButton").innerText = "Try Again";
-        return true;
-    }
-    return false;
-}
-
-// Random scenario for question
-function getRandomScenario() {
-    return scenarios[Math.floor(Math.random()*scenarios.length)];
-}
-
-// Render choices
-function renderChoices() {
-    let container = document.getElementById("choices");
-    container.innerHTML = "";
-    let scenario = getRandomScenario();
-
-    // Random danger zone
-    if(Math.random() < 0.1) { // 10% chance
-        player.singing = Math.max(player.singing-2,0);
-        player.visual = Math.max(player.visual-1,0);
-        document.getElementById("narration").innerText = "Danger zone! Stats dropped slightly.";
-    }
-
-    document.getElementById("narration").innerText = 
-        `Episode ${player.episode+1} Question ${player.question+1}: ${scenario.text}`;
-
-    scenario.options.forEach((opt,i)=>{
-        let btn = document.createElement("button");
-        btn.className = "choice";
-        btn.innerText = opt;
-        btn.onclick = ()=>{
-            let effect = scenario.effects[i];
-            for(let key in effect){
-                player[key] += effect[key];
-                if(player[key]<0) player[key]=0;
-            }
-            updateStats();
-            if(!checkElimination()) nextQuestion();
-        };
-        container.appendChild(btn);
-    });
-}
-
-// Next question or episode
-function nextQuestion() {
-    player.question++;
-    if(player.question >= questionsPerEpisode) {
-        player.question=0;
-        player.episode++;
-        if(player.episode>=totalEpisodes){
-            showFinale();
-            return;
-        }
-    }
-    renderChoices();
-}
-
-// Final outcome
-function showFinale() {
-    document.getElementById("choices").innerHTML = "";
-    let totalScore = player.singing + player.dancing + player.rapping + player.visual;
-
-    // Simulate votes
-    let fanVote = Math.floor(Math.random()*50 + totalScore*0.5);
-    let onlineVote = Math.floor(Math.random()*30 + totalScore*0.3);
-    let liveVote = Math.floor(Math.random()*20 + totalScore*0.2);
-    let finalScore = fanVote + onlineVote + liveVote;
-
-    let positions = [];
-    if(player.singing>=70) positions.push("Lead/Main Vocal");
-    if(player.dancing>=70) positions.push("Lead/Main Dancer");
-    if(player.rapping>=70) positions.push("Lead/Main Rapper");
-    if(player.visual>=90) positions.push("Visual");
-    if(player.visual>=70 && player.episode==0) positions.push("Face of the Group");
-
-    if(finalScore < 120){
-        document.getElementById("narration").innerText = "Unfortunately, you did not debut.";
-    } else {
-        document.getElementById("narration").innerText = 
-            `Congratulations! You debuted in the group as: ${positions.join(", ") || "a supporting member"}!`;
-    }
-
-    document.getElementById("startButton").innerText = "Play Again";
-}
-
-// Start/restart
-document.getElementById("startButton").onclick = ()=>{
-    player.episode=0;
-    player.question=0;
-    player.singing=Math.floor(Math.random()*50)+25;
-    player.dancing=Math.floor(Math.random()*50)+25;
-    player.rapping=Math.floor(Math.random()*50)+25;
-    player.visual=Math.floor(Math.random()*50)+25;
-    updateStats();
-    renderChoices();
-};
-
-updateStats();
-</script>
-
-</body>
-</html>  nationality: "Korean"
-};
-
-// Update stats display
-function updateStats() {
-  document.getElementById("singing").innerText = player.singing;
-  document.getElementById("dancing").innerText = player.dancing;
-  document.getElementById("rapping").innerText = player.rapping;
-  document.getElementById("visual").innerText = player.visual;
-}
-
-// Start game function
-function startGame() {
-  document.getElementById("narration").innerText = "The show begins! All 111 trainees enter the stage...";
-  updateStats();
-  // You can expand this with choices, performance rounds, voting etc.
-  console.log("Game started!");
-}
-
-// Initialize display
-updateStats();
-</script>
-
+            <div id="result" style="display:none;">
+                <h2 id="resultText"></h2>
+                <button onclick="restartGame()">Restart Game</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

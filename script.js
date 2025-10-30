@@ -15,20 +15,257 @@ const nationalities = ["Korean","Japanese","Chinese","Thai","Filipino","American
 const npcTraits = ["friendly","rival","fan favorite","hardworking","diva"];
 
 // ======== Scenario Pool ========
-// Auto-generate 200 scenarios as placeholders (expand later)
-let scenarioPool = [];
-for(let i=1;i<=totalScenarios;i++){
-  scenarioPool.push({
-    text: `Scenario ${i}: Choose an action affecting your stats or votes.`,
-    stat: ["singing","dancing","rap","visual","votes"][Math.floor(Math.random()*5)],
+// ======== Episode 1 Scenario Pool ========
+let scenarioPool = [
+  {
+    text: "Dynamic Dance Drill: You’re assigned a complicated footwork sequence for the upcoming stage.",
+    stat: "dancing",
     options: [
-      {text:"+3 choice", effect:3},
-      {text:"+4 choice", effect:4},
-      {text:"-3 choice", effect:-3},
-      {text:"+0 choice", effect:0}
+      { text: "Practice repeatedly until flawless", effect: 5 },
+      { text: "Ask a teammate to spot errors", effect: 3 },
+      { text: "Skip difficult sections and focus on easier moves", effect: 1 },
+      { text: "Record and review later", effect: 2 }
     ]
-  });
-}
+  },
+  {
+    text: "Emotional Vocal Exercise: Your mentor wants you to deliver the next line with raw emotion.",
+    stat: "singing",
+    options: [
+      { text: "Pour all feeling into it", effect: 4 },
+      { text: "Maintain steady pitch", effect: 3 },
+      { text: "Experiment with phrasing", effect: 2 },
+      { text: "Let another trainee lead this part", effect: -1 }
+    ]
+  },
+  {
+    text: "Mentor Spotlight Feedback: Mentor highlights that your expressions lack intensity.",
+    stat: "visual",
+    options: [
+      { text: "Practice exaggerated expressions", effect: 3 },
+      { text: "Politely defend your style", effect: -1 },
+      { text: "Ask mentor for a live demonstration", effect: 2 },
+      { text: "Ignore advice", effect: -2 }
+    ]
+  },
+  {
+    text: "Staff Assistance Task: Staff needs extra hands to set up stage props.",
+    stat: "teamMorale",
+    options: [
+      { text: "Help enthusiastically", effect: 1 },
+      { text: "Help reluctantly", effect: 1 },
+      { text: "Refuse", effect: -1 },
+      { text: "Assign tasks to others", effect: -1 }
+    ]
+  },
+  {
+    text: "Mid-Stage Mistake: You trip slightly during rehearsal but keep performing.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Improvise fluidly", effect: 4 },
+      { text: "Restart from previous formation", effect: 2 },
+      { text: "Freeze for a moment", effect: -1 },
+      { text: "Signal partner to cover", effect: 3 }
+    ]
+  },
+  {
+    text: "Harmony Challenge: Your part clashes with another trainee’s line during practice.",
+    stat: "teamwork",
+    options: [
+      { text: "Adjust pitch immediately", effect: 3 },
+      { text: "Suggest a subtle rearrangement", effect: 2 },
+      { text: "Let it slide", effect: -1 },
+      { text: "Argue with your partner", effect: -2 }
+    ]
+  },
+  {
+    text: "On-Stage Aegyo Moment: The camera captures your solo, and fans expect a cute expression or gesture.",
+    stat: "fanService",
+    options: [
+      { text: "Deliver full aegyo", effect: 3 },
+      { text: "Subtle, sweet smile", effect: 2 },
+      { text: "Add playful twist", effect: 3 },
+      { text: "Skip and stay serious", effect: -2 }
+    ]
+  },
+  {
+    text: "Signature Stage Tease: Fans notice your lipbite, wink, or eye contact. You can choose how to engage.",
+    stat: "fanService",
+    options: [
+      { text: "Go all out, deliver charm", effect: 4 },
+      { text: "Maintain brief, teasing gestures", effect: 2 },
+      { text: "Slightly playful but safe", effect: 3 },
+      { text: "Ignore and focus on technique", effect: -2 }
+    ]
+  }
+];
+
+// ======== Episode 2 Scenario Pool ========
+let episode2ScenarioPool = [
+  {
+    text: "Team Formation Drill: Your team struggles with a new, complex choreography.",
+    stat: "teamwork",
+    options: [
+      { text: "Take the lead and guide everyone", effect: 4 },
+      { text: "Focus on your section and help neighbors", effect: 2 },
+      { text: "Follow quietly without input", effect: 1 },
+      { text: "Skip coordination practice", effect: -2 }
+    ]
+  },
+  {
+    text: "Vocal Precision Challenge: During practice, team members sing slightly off-key.",
+    stat: "singing",
+    options: [
+      { text: "Correct them gently", effect: 3 },
+      { text: "Suggest re-recording the part", effect: 2 },
+      { text: "Concentrate only on your part", effect: 1 },
+      { text: "Ignore it", effect: -2 }
+    ]
+  },
+  {
+    text: "Mentor Feedback on Energy: Mentor says the team performance feels flat.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Motivate everyone enthusiastically", effect: 3 },
+      { text: "Focus only on your performance", effect: 2 },
+      { text: "Suggest a new formation", effect: 2 },
+      { text: "Ignore feedback", effect: -2 }
+    ]
+  },
+  {
+    text: "Staff Rehearsal Request: Staff asks for rehearsal footage for producers.",
+    stat: "teamwork",
+    options: [
+      { text: "Film your section professionally", effect: 2 },
+      { text: "Help the filming team", effect: 1 },
+      { text: "Politely decline", effect: -1 },
+      { text: "Make a funny clip for fans", effect: 1 }
+    ]
+  },
+  {
+    text: "Live Mistake Recovery: Someone in your group forgets choreography mid-stage.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Cover smoothly and keep energy", effect: 3 },
+      { text: "Signal to restart", effect: 2 },
+      { text: "Continue alone, improvising", effect: 1 },
+      { text: "Stop completely", effect: -2 }
+    ]
+  },
+  {
+    text: "Stage Costume/Prop Issue: A prop or costume malfunctions during rehearsal.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Fix it immediately", effect: 2 },
+      { text: "Improvise with what you have", effect: 3 },
+      { text: "Ignore minor issue", effect: 1 },
+      { text: "Wait for staff to fix", effect: -1 }
+    ]
+  },
+  {
+    text: "On-Stage Aegyo Moment: Fans expect a cute or teasing expression during performance.",
+    stat: "fanService",
+    options: [
+      { text: "Deliver fully", effect: 3 },
+      { text: "Give a subtle smile", effect: 2 },
+      { text: "Add playful variation", effect: 3 },
+      { text: "Focus on technical performance only", effect: -2 }
+    ]
+  },
+  {
+    text: "Lipbite / Eye Contact Tease: Fans notice flirty gestures during stage presence.",
+    stat: "fanService",
+    options: [
+      { text: "Fully engage with eye contact and gestures", effect: 4 },
+      { text: "Keep gestures brief but noticeable", effect: 2 },
+      { text: "Slightly playful, safe approach", effect: 3 },
+      { text: "Ignore and stay focused on moves", effect: -2 }
+    ]
+  }
+];
+
+// ======== Episode 3 Scenario Pool ========
+let episode3ScenarioPool = [
+  {
+    text: "High Note Consistency: Mentor asks you to hit a challenging high note multiple times.",
+    stat: "singing",
+    options: [
+      { text: "Focus and nail it each time", effect: 5 },
+      { text: "Try your best, occasionally miss", effect: 3 },
+      { text: "Avoid the high notes", effect: 0 },
+      { text: "Practice later on your own", effect: 2 }
+    ]
+  },
+  {
+    text: "Breath & Emotion Drill: Coach wants you to combine breath control with expressive singing.",
+    stat: "singing",
+    options: [
+      { text: "Follow exercises rigorously and add emotion", effect: 4 },
+      { text: "Focus partially on either", effect: 2 },
+      { text: "Skip exercises", effect: -1 },
+      { text: "Teach others techniques", effect: 2 }
+    ]
+  },
+  {
+    text: "Mentor One-on-One Guidance: Mentor notes your pitch or tone is inconsistent.",
+    stat: "singing",
+    options: [
+      { text: "Correct immediately", effect: 3 },
+      { text: "Make mental notes for later", effect: 1 },
+      { text: "Ask a teammate for help", effect: 1 },
+      { text: "Ignore advice", effect: -2 }
+    ]
+  },
+  {
+    text: "Staff Request for Extra Footage: Staff asks for additional rehearsal recordings for review.",
+    stat: "teamwork",
+    options: [
+      { text: "Record immediately and professionally", effect: 3 },
+      { text: "Record later", effect: 2 },
+      { text: "Ask guidance from staff", effect: 1 },
+      { text: "Refuse politely", effect: -2 }
+    ]
+  },
+  {
+    text: "Solo Stage Mistake Recovery: You forget lyrics or choreography during a solo.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Improvise smoothly", effect: 4 },
+      { text: "Restart quietly", effect: 2 },
+      { text: "Pause dramatically", effect: -1 },
+      { text: "Signal a teammate for help", effect: 2 }
+    ]
+  },
+  {
+    text: "Stage Technical Issue: Spotlight misses or costume malfunctions during performance.",
+    stat: "stagePerformance",
+    options: [
+      { text: "Adjust yourself", effect: 2 },
+      { text: "Signal staff", effect: 1 },
+      { text: "Continue performing normally", effect: 1 },
+      { text: "Pause or freeze", effect: -2 }
+    ]
+  },
+  {
+    text: "Fan Greeting / Video Appeal: Fans ask for a live or recorded personal greeting.",
+    stat: "fanService",
+    options: [
+      { text: "Perform energetically", effect: 3 },
+      { text: "Keep it sincere and sweet", effect: 4 },
+      { text: "Add humor", effect: 2 },
+      { text: "Skip", effect: -2 }
+    ]
+  },
+  {
+    text: "Stage Tease / Aegyo: Fans notice flirty or cute gestures during your performance.",
+    stat: "fanService",
+    options: [
+      { text: "Fully engage with gestures and expressions", effect: 4 },
+      { text: "Brief but noticeable gestures", effect: 2 },
+      { text: "Slight playful movements", effect: 3 },
+      { text: "Ignore and focus on performance", effect: -2 }
+    ]
+  }
+];
 
 // ======== Game Initialization ========
 function customForeign() {
